@@ -52,5 +52,8 @@ public class BidService {
         projectRepository.save(project);
         
     }
+    public List<Bid> getBidsForProject(Project project){
+        return bidRepository.findByProject(project);
+    }
 
 }

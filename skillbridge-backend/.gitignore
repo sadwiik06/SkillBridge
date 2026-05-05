@@ -39,6 +39,7 @@ build/
 .env.test.local
 .env.production.local
 *.env
+env.properties
 
 ### Logs ###
 *.log
