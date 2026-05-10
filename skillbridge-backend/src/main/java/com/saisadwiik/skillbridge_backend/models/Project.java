@@ -1,21 +1,14 @@
 package com.saisadwiik.skillbridge_backend.models;
 
+import org.hibernate.boot.model.internal.StrictIdGeneratorResolverSecondPass;
+
 import com.saisadwiik.skillbridge_backend.Enum.ProjectCategory;
 import com.saisadwiik.skillbridge_backend.Enum.ProjectStatus;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.List;
 
 @Entity
 @Table(name="projects")
@@ -42,7 +35,11 @@ public class Project {
     private User freelancer;
     @Enumerated(EnumType.STRING)
     private ProjectCategory category;
+    private String submissionUrl;
+    private String submissionComment;
 
+    private boolean isReviewed = false;
     
-
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Milestone> milestones;
 }

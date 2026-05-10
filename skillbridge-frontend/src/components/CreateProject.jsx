@@ -8,6 +8,9 @@ const CreateProject = ()=>{
         category:'WEB_DEVELOPMENT'
     });
     const [availableBalance,setAvailableBalance]=useState(0);
+    const [milestones,setMilestones]=useState([]);
+    const [isGenerating,setIsGenerating]=useState(false);
+
     const categories = [
         "WEB_DEVELOPMENT",
         "MOBILE_APP",
@@ -31,6 +34,28 @@ const CreateProject = ()=>{
         setFormData({...formData,[e.target.name]:e.target.value})
 
     };
+    const generateAIMilestones=async()=>{
+        if(!formData.description || !formData.budget){
+            alert("Please provide a description and budget");
+            return;
+        }
+        setIsGenerating(true);
+        try{
+            const res=await API.post('/ai/suggest',{
+                description: formData.description,
+                budget: formData.budget
+            });
+            const data=typeof res.data === 'string' ? JSON.parse(res.data):res.data;
+            setMilestones(data);
+        
+        } catch(err){
+            console.error("AI Generation failed",err);
+            const errorMsg = err.response?.data || "Failed to generate milestones.";
+            alert(errorMsg);
+        } finally {
+            setIsGenerating(false);
+        }
+    }
     const handleSubmit=async(e)=>{
         e.preventDefault();
 
@@ -41,14 +66,15 @@ const CreateProject = ()=>{
             return;
         }
         try{
-            await API.post('/projects/create',formData);
+            await API.post('/projects/create',{...formData,milestones});
             alert("Project posted and funds locked");
             setFormData({
                 title:"",
                 description:"",
                 budget:"",
                 category:"WEB_DEVELOPMENT"
-            })
+            });
+            setMilestones([]);
         }
         catch(err){
             alert("Failed to create project")
@@ -83,10 +109,24 @@ const CreateProject = ()=>{
                         Budget Exceeds availble funds
                     </span>
                 )}
+                <button type="button" onClick={generateAIMilestones} disabled={isGenerating}>{isGenerating? "Gemini is analyzing...":"Generate AI milestones"}</button>
+                {milestones.length > 0 && (
+                    <div>
+                        <h4>AI Suggested Plan:</h4>
+                        {milestones.map((m,index)=>(
+                            <div key={index}>
+                                <strong>{m.title}</strong>
+                                <span>${m.amount}</span>
+                                <p>{m.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                )}
                 <button type="submit">Post Project</button>
 
             </form>
         </div>
-    )
-    
-}
+    );
+};
+
+export default CreateProject;

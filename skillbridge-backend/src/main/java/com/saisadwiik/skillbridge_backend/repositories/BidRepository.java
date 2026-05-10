@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.saisadwiik.skillbridge_backend.models.Bid;
 import com.saisadwiik.skillbridge_backend.models.Project;
+import com.saisadwiik.skillbridge_backend.models.User;
 
 public interface BidRepository extends JpaRepository<Bid,Long>{
     List<Bid> findByProject(Project project);
     List<Bid> findByFreelancerId(Long freelancerId);
+    boolean existsByProjectAndFreelancer(Project project, User freelancer);
 
 }

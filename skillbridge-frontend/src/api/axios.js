@@ -6,12 +6,12 @@ const API = axios.create({
 });
 
 // used to add jwt token from localstorage to every request
-API.interceptors.request.use((cpnfig) => {
+API.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
-        cpnfig.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
-    return cpnfig;
+    return config;
 })
 
 export default API;

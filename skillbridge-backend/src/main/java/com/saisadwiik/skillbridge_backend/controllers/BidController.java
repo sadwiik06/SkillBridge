@@ -57,4 +57,8 @@ public class BidController {
 
 
     
+    @GetMapping("/my-bids")
+    public ResponseEntity<List<Bid>> getMyBids(Principal principal){
+        return ResponseEntity.ok(bidService.getBidsByFreelancer(principal.getName()));
+    }
 }
