@@ -16,6 +16,7 @@ import com.saisadwiik.skillbridge_backend.services.ChatService;
 
 @RestController
 @RequestMapping("/api/messages")
+@org.springframework.web.bind.annotation.CrossOrigin("*")
 public class MessageController {
 
     @Autowired
