@@ -100,12 +100,12 @@ const CreateProject = () => {
         return (
             <div className="w-full max-w-2xl mx-auto px-6 py-20">
                 <Card className="rounded-[2.5rem] border-zinc-200 dark:border-zinc-800 shadow-2xl overflow-hidden">
-                    <CardContent className="pt-12 pb-12 text-center">
-                        <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CardContent className="pt-12 pb-12 flex flex-col items-center text-center px-6">
+                        <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mb-6">
                             <CheckCircle2 className="w-10 h-10" />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-4">Project Posted!</h2>
-                        <p className="text-zinc-500 mb-8 max-w-md mx-auto">Your project has been successfully created and the funds have been safely locked in escrow.</p>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-4 w-full">Project Posted!</h2>
+                        <p className="text-zinc-500 mb-8 max-w-md w-full">Your project has been successfully created and the funds have been safely locked in escrow.</p>
                         <Button 
                             onClick={() => setSubmitted(false)}
                             className="rounded-2xl bg-black text-white hover:bg-zinc-800 dark:bg-white dark:text-black h-12 px-8 font-bold"

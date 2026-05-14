@@ -48,6 +48,20 @@ public class MessageController {
             return ResponseEntity.ok(Collections.emptyList());
         }
 
+
         return ResponseEntity.ok(chatMessageRepository.findByChatRoomIdOrderByTimestampAsc(roomId));
+    }
+
+    @Autowired
+    private com.saisadwiik.skillbridge_backend.repositories.ChatRoomRepository chatRoomRepository;
+
+    @Autowired
+    private com.saisadwiik.skillbridge_backend.repositories.UserRepository userRepository;
+
+    @GetMapping("/conversations")
+    public ResponseEntity<List<com.saisadwiik.skillbridge_backend.models.ChatRoom>> getConversations(java.security.Principal principal) {
+        com.saisadwiik.skillbridge_backend.models.User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ResponseEntity.ok(chatRoomRepository.findByClientIdOrFreelancerId(user.getId(), user.getId()));
     }
 }

@@ -34,8 +34,8 @@ public class User {
     private Long id;
     @Column(unique = true, nullable=false)
     private String email;
-    @Column(nullable= false)
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @Column(nullable = false)
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Enumerated(EnumType.STRING)

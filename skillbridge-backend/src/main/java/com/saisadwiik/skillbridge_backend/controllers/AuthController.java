@@ -42,6 +42,9 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody User user) {
         try {
             User registeredUser = authService.register(user);
+            if (registeredUser == null) {
+                return ResponseEntity.badRequest().body("Email is already registered.");
+            }
             return ResponseEntity.ok("User registered successfully with ID: " + registeredUser.getId());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

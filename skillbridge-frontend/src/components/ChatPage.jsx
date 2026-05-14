@@ -8,7 +8,7 @@ import { Send, MessageCircle, LogOut, ChevronLeft, ChevronDown, ChevronRight, Br
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-const BACKEND_URL = "http://localhost:8080";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
 const SOCKET_URL = `${BACKEND_URL}/ws-skillbridge`;
 
 export default function ChatPage() {
@@ -43,35 +43,21 @@ export default function ChatPage() {
 
     const fetchContacts = async (user) => {
         try {
-            let contactList = [];
-
-            if (user.role === 'ROLE_FREELANCER') {
-                const res = await axios.get(`${BACKEND_URL}/api/projects/my-work`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
-                contactList = res.data
-                    .filter(p => p.client)
-                    .map(p => ({
-                        id: p.client.id,
-                        name: p.client.name,
-                        projectId: p.id,
-                        projectTitle: p.title,
-                        role: 'CLIENT',
-                    }));
-            } else if (user.role === 'ROLE_CLIENT') {
-                const res = await axios.get(`${BACKEND_URL}/api/projects/my-projects`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-                });
-                contactList = res.data
-                    .filter(p => p.freelancer && (p.status === 'IN_PROGRESS' || p.status === 'SUBMITTED' || p.status === 'COMPLETED'))
-                    .map(p => ({
-                        id: p.freelancer.id,
-                        name: p.freelancer.name,
-                        projectId: p.id,
-                        projectTitle: p.title,
-                        role: 'FREELANCER',
-                    }));
-            }
+            const res = await axios.get(`${BACKEND_URL}/api/messages/conversations`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            
+            const contactList = res.data.map(room => {
+                const isClient = user.role === 'ROLE_CLIENT';
+                const otherUser = isClient ? room.freelancer : room.client;
+                return {
+                    id: otherUser.id,
+                    name: otherUser.name,
+                    projectId: room.project.id,
+                    projectTitle: room.project.title,
+                    role: isClient ? 'FREELANCER' : 'CLIENT',
+                };
+            });
 
             const seen = new Set();
             const unique = contactList.filter(c => {

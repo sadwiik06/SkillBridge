@@ -8,4 +8,5 @@ import com.saisadwiik.skillbridge_backend.models.ChatRoom;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findByProjectIdAndClientIdAndFreelancerId(Long projectId, Long clientId, Long freelancerId);
+    java.util.List<ChatRoom> findByClientIdOrFreelancerId(Long clientId, Long freelancerId);
 }
