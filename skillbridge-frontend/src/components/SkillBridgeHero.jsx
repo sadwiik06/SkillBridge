@@ -28,9 +28,9 @@ function SkillBridgeHero() {
   }, [titleNumber, titles]);
 
   return (
-    <div className="w-full relative z-10">
+    <div className="w-full relative z-10 overflow-x-hidden">
       <div className="container mx-auto">
-        <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
+        <div className="flex gap-8 pt-[120px] pb-20 lg:pt-[120px] lg:pb-40 items-center justify-center flex-col">
           <div className="flex gap-4 flex-col">
             <h1 className="text-5xl md:text-7xl max-w-4xl tracking-tighter text-center font-regular dark:text-white text-slate-900">
               <span className="font-light">Freelancing that is </span>

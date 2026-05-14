@@ -9,7 +9,7 @@ export default function HomePage() {
 
   return (
     <AuroraBackground>
-       <div className="flex flex-col gap-20 items-center pb-10 w-full">
+       <div className="flex flex-col gap-20 items-center pb-10 w-full overflow-x-hidden">
           <SkillBridgeHero />
           
           <ProjectEscrowHero 
