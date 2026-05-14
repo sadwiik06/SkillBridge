@@ -19,5 +19,8 @@ public class UserDTO{
     private Long totalFreelancersHired;
     private Double hireRate;
     private Double totalSpent;
+    private Double successRate;
+    private Double trustScore;
+    private String photoPath;
     
 }

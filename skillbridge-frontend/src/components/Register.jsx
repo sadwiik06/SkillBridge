@@ -1,101 +1,164 @@
-import React, { useState } from 'react';
+"use client";
+
+import { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Mail, User, Lock, CheckCircle, Circle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import API from '../api/axios';
-import { useNavigate } from 'react-router-dom';
-import { AuroraBackground } from './ui/AuroraBackground';
+import { cn } from "@/lib/utils";
 
-const Register = ( )=>{
-    const [formData, setFormData] = useState({name:'',email:'',password:'', role: 'ROLE_CLIENT'});
-    const navigate = useNavigate();
-    
-    const handleChange = (e) =>{
-        setFormData({...formData,[e.target.name]:e.target.value});
-    };
+export default function Register() {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("ROLE_FREELANCER");
+  const navigate = useNavigate();
 
-    const handleSubmit = async(e)=>{
-        e.preventDefault();
-        try{
-            await API.post('/auth/register',formData);
-            alert("Registration successful! Please Login");
-            navigate('/login');
-        } catch(error){
-            alert("Registration failed: " + (error.response?.data || "Server Error"))
-        }
-    };
+  const checks = useMemo(() => ({
+    length: password.length >= 8,
+    upper: /[A-Z]/.test(password),
+    lower: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    symbol: /[@#$%^&+=!]/.test(password),
+  }), [password]);
 
-    return(
-        <AuroraBackground>
-            <div className="relative z-10 w-full max-w-lg px-8 py-10 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Join SkillBridge</h2>
-                    <p className="text-slate-600 dark:text-slate-400 mt-2">Create your account to get started</p>
-                </div>
-                
-                <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
-                        <input 
-                            name="name" 
-                            type="text" 
-                            placeholder="John Doe" 
-                            onChange={handleChange} 
-                            required 
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
-                        />
-                    </div>
+  const isPasswordValid = Object.values(checks).every(Boolean);
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email Address</label>
-                        <input 
-                            name="email" 
-                            type="email" 
-                            placeholder="name@example.com" 
-                            onChange={handleChange} 
-                            required 
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
-                        />
-                    </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isPasswordValid) return;
+    try {
+        await API.post('/auth/register', { name, email, password, role });
+        alert("Registration successful! Please Login");
+        navigate('/login');
+    } catch (error) {
+        alert("Registration failed: " + (error.response?.data || "Server Error"));
+    }
+  };
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Password</label>
-                        <input 
-                            name="password" 
-                            type="password" 
-                            placeholder="••••••••" 
-                            onChange={handleChange} 
-                            required 
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all dark:text-white"
-                        />
-                    </div>
+  const Requirement = ({ met, label }) => (
+    <div className={cn(
+      "flex items-center gap-1.5 text-xs mt-1 transition-colors duration-200",
+      met ? "text-green-600 font-medium" : "text-gray-400"
+    )}>
+      {met ? <CheckCircle className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+      {label}
+    </div>
+  );
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">I want to:</label>
-                        <select 
-                            name="role" 
-                            onChange={handleChange} 
-                            value={formData.role}
-                            className="w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all dark:text-white"
-                        >
-                            <option value="ROLE_CLIENT">Hire Freelancers (Client)</option>
-                            <option value="ROLE_FREELANCER">Find Work (Freelancer)</option>
-                        </select>
-                    </div>
-                    
-                    <button 
-                        type="submit" 
-                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg shadow-indigo-500/30 transition-all active:scale-[0.98]"
-                    >
-                        Create Account
-                    </button>
-                </form>
-                
-                <div className="mt-8 text-center">
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                        Already have an account? 
-                        <button onClick={() => navigate('/login')} className="ml-1 text-indigo-600 font-semibold hover:underline">Log in</button>
-                    </p>
-                </div>
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-zinc-50 dark:bg-zinc-950 px-4 py-8">
+      <Card className="w-full max-w-sm shadow-xl rounded-3xl border border-gray-100 dark:border-zinc-900 overflow-hidden bg-white dark:bg-zinc-950">
+        <CardHeader className="pb-4 pt-8">
+          <CardTitle className="text-xl font-bold text-center text-gray-900 dark:text-white tracking-tight">
+            Join SkillBridge
+          </CardTitle>
+          <p className="text-center text-[13px] text-gray-500 mt-0.5">
+            Create an account to start secure work.
+          </p>
+        </CardHeader>
+        <CardContent className="px-8 pb-8">
+          <form onSubmit={handleSubmit} className="space-y-4 text-left">
+            <div>
+              <Label htmlFor="name" className="text-[13px] font-medium text-gray-700 dark:text-zinc-300">Full Name</Label>
+              <div className="flex items-center gap-2 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-1 bg-white dark:bg-zinc-900 mt-1.5 focus-within:ring-2 focus-within:ring-black/5 transition-all">
+                <User className="w-4 h-4 text-gray-400" />
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none bg-transparent h-9 text-sm"
+                  required
+                />
+              </div>
             </div>
-        </AuroraBackground>
-    )
+
+            <div>
+              <Label htmlFor="email" className="text-[13px] font-medium text-gray-700 dark:text-zinc-300">Email Address</Label>
+              <div className="flex items-center gap-2 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-1 bg-white dark:bg-zinc-900 mt-1.5 focus-within:ring-2 focus-within:ring-black/5 transition-all">
+                <Mail className="w-4 h-4 text-gray-400" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none bg-transparent h-9 text-sm"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="password" className="text-[13px] font-medium text-gray-700 dark:text-zinc-300">Password</Label>
+              <div className="flex items-center gap-2 border border-slate-200 dark:border-zinc-800 rounded-xl px-3 py-1 bg-white dark:bg-zinc-900 mt-1.5 focus-within:ring-2 focus-within:ring-black/5 transition-all">
+                <Lock className="w-4 h-4 text-gray-400" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="border-0 focus-visible:ring-0 focus-visible:outline-none shadow-none bg-transparent h-9 text-sm"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-x-2 mt-2">
+                <Requirement met={checks.length} label="8+ characters"/>
+                <Requirement met={checks.upper} label="Uppercase"/>
+                <Requirement met={checks.lower} label="Lowercase"/>
+                <Requirement met={checks.number} label="Number"/>
+                <Requirement met={checks.symbol} label="Special char"/>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <Button
+                type="button"
+                variant={role === "ROLE_FREELANCER" ? "default" : "outline"}
+                onClick={() => setRole("ROLE_FREELANCER")}
+                className={cn(
+                    "rounded-xl transition-all text-xs h-9",
+                    role === "ROLE_FREELANCER" ? "bg-black text-white dark:bg-white dark:text-black hover:bg-zinc-800" : "hover:bg-zinc-50"
+                )}
+              >
+                Freelancer
+              </Button>
+              <Button
+                type="button"
+                variant={role === "ROLE_CLIENT" ? "default" : "outline"}
+                onClick={() => setRole("ROLE_CLIENT")}
+                className={cn(
+                    "rounded-xl transition-all text-xs h-9",
+                    role === "ROLE_CLIENT" ? "bg-black text-white dark:bg-white dark:text-black hover:bg-zinc-800" : "hover:bg-zinc-50"
+                )}
+              >
+                Client
+              </Button>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={!isPasswordValid}
+              className="w-full rounded-xl hover:cursor-pointer text-white bg-black hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-200 font-medium shadow-sm transition-all mt-4 h-10"
+            >
+              Create Account
+            </Button>
+          </form>
+
+          <p className="text-sm text-gray-500 text-center mt-6">
+            Already have an account?{" "}
+            <Link to="/login" className="text-black dark:text-white font-semibold hover:underline">
+              Log in
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
-export default Register;

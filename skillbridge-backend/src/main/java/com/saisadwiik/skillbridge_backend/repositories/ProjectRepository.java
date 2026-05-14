@@ -31,4 +31,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>{
 
     @org.springframework.data.jpa.repository.Query("SELECT SUM(p.budget) FROM Project p WHERE p.client = :client AND p.status = :status")
     Double sumBudgetByClientAndStatus(@org.springframework.data.repository.query.Param("client") User client, @org.springframework.data.repository.query.Param("status") com.saisadwiik.skillbridge_backend.Enum.ProjectStatus status);
+
+    long countByFreelancer(User freelancer);
+    long countByFreelancerAndStatus(User freelancer, ProjectStatus status);
 }

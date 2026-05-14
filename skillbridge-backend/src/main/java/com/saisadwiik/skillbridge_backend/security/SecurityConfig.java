@@ -36,6 +36,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/profile/**").permitAll()
+                // WebSocket handshake — SockJS can't send Authorization headers on initial HTTP upgrade
+                .requestMatchers("/ws-skillbridge/**").permitAll()
+                // Chat messages REST endpoint
+                .requestMatchers("/api/messages/**").authenticated()
                 .requestMatchers("/api/auth/me", "/api/auth/me/**").authenticated()
                 .anyRequest().authenticated()
             );

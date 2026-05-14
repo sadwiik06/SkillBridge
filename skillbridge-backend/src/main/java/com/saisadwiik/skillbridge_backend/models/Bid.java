@@ -1,5 +1,7 @@
 package com.saisadwiik.skillbridge_backend.models;
 
+import java.time.LocalDateTime;
+
 import com.saisadwiik.skillbridge_backend.Enum.BidStatus;
 
 import jakarta.persistence.Entity;
@@ -35,6 +37,10 @@ public class Bid {
     @ManyToOne
     @JoinColumn(name="freelancer_id")
     private User freelancer;
+    private LocalDateTime createdAt=LocalDateTime.now();
+    //If chat already exists
+    private Boolean hasActiveChat=false;
+    
 
 
 }
