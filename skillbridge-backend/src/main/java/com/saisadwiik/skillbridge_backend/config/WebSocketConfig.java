@@ -1,5 +1,6 @@
 package com.saisadwiik.skillbridge_backend.config;
 
+import java.util.Arrays;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -20,13 +21,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
         config.setUserDestinationPrefix("/user");
 
     }
-    @org.springframework.beans.factory.annotation.Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:5174}")
+    @org.springframework.beans.factory.annotation.Value("${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:5174}")
     private String allowedOrigins;
 
     //tell react to send request to /ws-skillbridge connection point
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/ws-skillbridge").setAllowedOrigins(allowedOrigins.split(","))
+        String[] origins = Arrays.stream(allowedOrigins.split(","))
+                                .map(String::trim)
+                                .toArray(String[]::new);
+        registry.addEndpoint("/ws-skillbridge").setAllowedOrigins(origins)
         .withSockJS();// falls back to long polling
     }
 
