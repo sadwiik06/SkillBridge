@@ -2,7 +2,7 @@
 
 SkillBridge is a platform that connects clients and freelancers
 
-## Steps:
+### Steps:
 
 # CLIENT:
 
@@ -29,3 +29,63 @@ SkillBridge is a platform that connects clients and freelancers
 - If it is a whole project, submit the whole work; if it is milestone-based, submit each milestone's work. The client will approve and release funds accordingly.
 
 - You can also chat with the client if you have any queries or need extra information:)
+
+
+# Local Setup Guide
+
+Follow these steps
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/sadwiik06/SkillBridge.git
+cd SkillBridge
+```
+
+
+### 2. Configure Backend
+
+#### Configure Backend Environment
+Navigate to the skillbridge-backend directory and create your .env file from the provided template .env.example
+
+```bash
+cd skillbridge-backend
+cp .env.example .env
+```
+Open .env and fill in your credentials:
+
+#### Run the Spring Boot Server
+
+- **On macOS/Linux**:
+  ```bash
+  chmod +x mvnw
+  ./mvnw spring-boot:run
+  ```
+
+- **On Windows (PowerShell / CMD)**:
+  ```powershell
+  .\mvnw.cmd spring-boot:run
+  ```
+
+The backend API will start at: http://localhost:8080
+
+
+
+### 3. Configure Frontend
+
+```bash
+cd skillbridge-frontend
+```
+
+#### Install Dependencies
+```bash
+npm install
+```
+
+#### Start the Development Server
+```bash
+npm run dev
+```
+
+The frontend client will start at: http://localhost:5173 :)
+
